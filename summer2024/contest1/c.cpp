@@ -10,8 +10,6 @@ vector<vector<int>> reverseGraph(MAXN);
 vector<int> visited(MAXN);
 vector<int> exitOrder;
 vector<int> componentOfV(MAXN);
-vector<unordered_set<int>> condensationGraphEdges(MAXN);
-vector<vector<int>> condensationGraph(MAXN);
 vector<vector<int>> components;
 
 void init(int numV, int numE) {
@@ -20,8 +18,6 @@ void init(int numV, int numE) {
     for (int i = 0; i < numV; i++) {
         graph[i].clear();
         reverseGraph[i].clear();
-        condensationGraph[i].clear();
-        condensationGraphEdges[i].clear();
         visited[i] = 0;
     }
 }
@@ -40,23 +36,6 @@ void dfs2(int v, int c) {
     components.back().push_back(v);
 
     for (int u : reverseGraph[v]) if (visited[u] == 1) dfs2(u, c);
-}
-
-void dfs3(int v, int parent) {
-    if (componentOfV[v] != componentOfV[parent]) {
-        condensationGraphEdges[componentOfV[parent]].insert(componentOfV[v]);
-    }
-    visited[v] = 3;
-
-    for (int u : graph[v]) if (visited[u] == 2) dfs3(u, v);
-}
-
-void createCondensationGraph(int n) {
-    for (int i = 0; i < n; i++) if(visited[i] == 2) dfs3(i,i);
-
-    for (int i = 0; i < components.size(); i++) {
-        condensationGraph[i].insert(condensationGraph[i].end(), condensationGraphEdges[i].begin(), condensationGraphEdges[i].end());
-    }
 }
 
 void solve() {
@@ -78,20 +57,16 @@ void solve() {
         dfs2(exitOrder[i], componentId++);
     }
 
-    createCondensationGraph(n);
-
-    cout << "Condensation graph num of vertices: " << components.size() << endl;
-    for (int i = 0; i < components.size(); i++) {
-        for (int j = 0; j < condensationGraph[i].size(); j++) {
-            cout << "(" << i+1 << ", " << condensationGraph[i][j]+1 << ") ";
-        }
+    if (components.size() > 1) {
+        cout << "NO" << endl;
+        cout << components[1][0]+1 << " " << components[0][0]+1 << endl;
+    } else {
+        cout << "YES" << endl;
     }
-    cout << endl << endl;
 }
 
 int main() {
-    ll t;
-    cin >> t;
+    ll t = 1;
 
     while (t--) solve();
 
