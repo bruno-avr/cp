@@ -24,23 +24,18 @@ void yes() { cout<<"YES\n"; }
 void no() { cout<<"NO\n"; }
 
 void solve() {
-    int n;
-    cin >> n;
-    n -= 3;
-    int v[3];
-    v[0] = v[1] = v[2] = 1;
-    int curr = 2;
-    while (n > 0) {
-        int a = min(25, n);;
-        v[curr] += min(25, a);
-        n -= a;
-        curr--;
+    string s;
+    cin >> s;
+    int maxEquals = 0;
+    for (int i = 0; i < s.size() - 3; i++) {
+        int equals = 0;
+        if (s[i] == 'O') equals++;
+        if (s[i+1] == 'D') equals++;
+        if (s[i+2] == 'O') equals++;
+        if (s[i+3] == 'O') equals++;
+        maxEquals = max(maxEquals, equals);
     }
-    f(i, 0, 3) {
-        char c = 'a'+v[i]-1;
-        cout << c;
-    }
-    cout << endl;
+    cout << s.size() - maxEquals << endl;
 }
 
 int main() {

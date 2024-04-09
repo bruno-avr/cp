@@ -17,30 +17,36 @@ using namespace std;
 #define INF 0x3f3f3f3f
 #define INFLL 0x3f3f3f3f3f3f3f3f
 
-#define mod 998244353LL
-
 #define f(i,s,e) for(ll i=s;i<e;i++)
 void yes() { cout<<"YES\n"; }
 void no() { cout<<"NO\n"; }
 
 void solve() {
-    int n;
-    cin >> n;
-    n -= 3;
-    int v[3];
-    v[0] = v[1] = v[2] = 1;
-    int curr = 2;
-    while (n > 0) {
-        int a = min(25, n);;
-        v[curr] += min(25, a);
-        n -= a;
-        curr--;
+    ll n, k, mod = 1000000000+7;
+    cin >> n >> k;
+    vector<ll> v(n);
+    ll totalSum = 0;
+    f(i,0,n) {
+        cin >> v[i];
+        totalSum += v[i];
     }
-    f(i, 0, 3) {
-        char c = 'a'+v[i]-1;
-        cout << c;
+    ll currMax = 0;
+    ll maxEnd = 0;
+    ll currSum = 0;
+    f(i,0,n) {
+        currSum += v[i];
+        if (currSum < 0) {
+            currSum = 0;
+        } else if (currSum > currMax) {
+            currMax = currSum;
+            maxEnd = i;
+        }
     }
-    cout << endl;
+    f(i,0,k) {
+        totalSum = (totalSum + mod + currMax) % mod;
+        currMax = (currMax * 2) % mod;
+    }
+    cout << totalSum% mod << endl;
 }
 
 int main() {

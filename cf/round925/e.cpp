@@ -23,24 +23,35 @@ using namespace std;
 void yes() { cout<<"YES\n"; }
 void no() { cout<<"NO\n"; }
 
+int getNumberOfDigits(int n) {
+    return (to_string(n)).size();
+}
+
 void solve() {
-    int n;
-    cin >> n;
-    n -= 3;
-    int v[3];
-    v[0] = v[1] = v[2] = 1;
-    int curr = 2;
-    while (n > 0) {
-        int a = min(25, n);;
-        v[curr] += min(25, a);
-        n -= a;
-        curr--;
+    int n, m, a, num0;
+    cin >> n >> m;
+    priority_queue<int> pq;
+    int totalDigits = 0;
+    f(i, 0, n) {
+        num0 = 0;
+        cin >> a;
+        totalDigits += getNumberOfDigits(a);
+        while (a%10 == 0) {
+            num0++;
+            a/=10;
+        }
+        pq.push(num0);
     }
-    f(i, 0, 3) {
-        char c = 'a'+v[i]-1;
-        cout << c;
+
+    bool anna = true;
+    while (!pq.empty()) {
+        int curr = pq.top(); pq.pop();
+        if (anna) totalDigits -= curr;
+        anna = !anna;
     }
-    cout << endl;
+
+    if (totalDigits > m) cout << "Sasha" << endl;
+    else cout << "Anna" << endl;    
 }
 
 int main() {

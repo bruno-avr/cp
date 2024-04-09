@@ -23,32 +23,21 @@ using namespace std;
 void yes() { cout<<"YES\n"; }
 void no() { cout<<"NO\n"; }
 
-void solve() {
-    int n;
-    cin >> n;
-    n -= 3;
-    int v[3];
-    v[0] = v[1] = v[2] = 1;
-    int curr = 2;
-    while (n > 0) {
-        int a = min(25, n);;
-        v[curr] += min(25, a);
-        n -= a;
-        curr--;
-    }
-    f(i, 0, 3) {
-        char c = 'a'+v[i]-1;
-        cout << c;
-    }
-    cout << endl;
-}
-
 int main() {
     optimize;
-    int T;
-    cin >> T;
-
-    while (T--) solve();
+    unsigned ll n, t, a, b;
+    cin >> n >> t;
+    vector<unsigned ll> scores(n, 0);
+    map<unsigned ll, unsigned ll> m;
+    m[0] = n;
+    for (unsigned ll i = 0; i < t; i++) {
+        cin >> a >> b; a--;
+        m[scores[a]]--;
+        if (m[scores[a]] == 0) m.erase(scores[a]);
+        scores[a] += b;
+        m[scores[a]]++;
+        cout << m.size() << endl;
+    }
 
     return 0;
 }

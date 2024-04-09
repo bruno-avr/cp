@@ -24,23 +24,15 @@ void yes() { cout<<"YES\n"; }
 void no() { cout<<"NO\n"; }
 
 void solve() {
-    int n;
-    cin >> n;
-    n -= 3;
-    int v[3];
-    v[0] = v[1] = v[2] = 1;
-    int curr = 2;
-    while (n > 0) {
-        int a = min(25, n);;
-        v[curr] += min(25, a);
-        n -= a;
-        curr--;
+    int n, k;
+    cin >> n >> k;
+    int duples = (4*n-2)/2-1;
+
+    if (k <= duples*2) {
+        cout << min((k+1)/2, duples) << endl;
+    } else {
+        cout << duples + (k - duples*2) << endl;
     }
-    f(i, 0, 3) {
-        char c = 'a'+v[i]-1;
-        cout << c;
-    }
-    cout << endl;
 }
 
 int main() {

@@ -24,29 +24,33 @@ void yes() { cout<<"YES\n"; }
 void no() { cout<<"NO\n"; }
 
 void solve() {
-    int n;
-    cin >> n;
-    n -= 3;
-    int v[3];
-    v[0] = v[1] = v[2] = 1;
-    int curr = 2;
-    while (n > 0) {
-        int a = min(25, n);;
-        v[curr] += min(25, a);
-        n -= a;
-        curr--;
+    string s, end = "@odoo.com";
+    cin >> s;
+    if ((s.length() != end.length()+2) && (s.length() != end.length()+3) && (s.length() != end.length()+4)) {
+        cout << "no" << endl;
+        return;
     }
-    f(i, 0, 3) {
-        char c = 'a'+v[i]-1;
-        cout << c;
+    reverse(all(s));
+    reverse(all(end));
+    int i;
+    for (i = 0; i < end.length(); i++) {
+        if (s[i] != end[i]) {
+            cout << "no" << endl;
+            return;
+        }
     }
-    cout << endl;
+    for (; i < s.length(); i++) {
+        if (s[i] < 'a' || s[i] > 'z') {
+            cout << "no" << endl;
+            return;
+        }
+    }
+    cout << "yes" << endl;
 }
 
 int main() {
     optimize;
-    int T;
-    cin >> T;
+    int T = 1;
 
     while (T--) solve();
 

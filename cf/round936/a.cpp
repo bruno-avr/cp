@@ -26,21 +26,22 @@ void no() { cout<<"NO\n"; }
 void solve() {
     int n;
     cin >> n;
-    n -= 3;
-    int v[3];
-    v[0] = v[1] = v[2] = 1;
-    int curr = 2;
-    while (n > 0) {
-        int a = min(25, n);;
-        v[curr] += min(25, a);
-        n -= a;
-        curr--;
+    vector<int> v(n);
+    f(i,0,n) {
+        cin >> v[i];
     }
-    f(i, 0, 3) {
-        char c = 'a'+v[i]-1;
-        cout << c;
+    sort(all(v));
+    if (n == 1) {
+        cout << 1 << endl;
+        return;
     }
-    cout << endl;
+    int cont = 1;
+    int half = (n-1)/2;
+    f (i, half+1, n) {
+        if (v[i] > v[half]) break;
+        cont++;
+    }
+    cout << cont << endl;
 }
 
 int main() {

@@ -24,23 +24,30 @@ void yes() { cout<<"YES\n"; }
 void no() { cout<<"NO\n"; }
 
 void solve() {
-    int n;
-    cin >> n;
-    n -= 3;
-    int v[3];
-    v[0] = v[1] = v[2] = 1;
-    int curr = 2;
-    while (n > 0) {
-        int a = min(25, n);;
-        v[curr] += min(25, a);
-        n -= a;
-        curr--;
+    ll n, x, y;
+    cin >> n >> x >> y;
+    ll k = lcm(x, y);
+    
+    vector<ll> v(n);
+
+    ll resto;
+    unordered_map<ll, unordered_set<ll>> m;
+    f(i, 0, n) {
+        cin >> v[i];
+        resto = v[i] % k;
+        m[resto].insert(i);
     }
-    f(i, 0, 3) {
-        char c = 'a'+v[i]-1;
-        cout << c;
+
+    ll total = 0;
+
+    f(i, 0, n) {
+        resto = v[i] % k;
+        total += m[k-resto].size();
+        cout << total << " ";
+        m[resto].erase(i);
     }
-    cout << endl;
+
+    cout << total << endl;    
 }
 
 int main() {

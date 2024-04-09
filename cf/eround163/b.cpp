@@ -26,21 +26,31 @@ void no() { cout<<"NO\n"; }
 void solve() {
     int n;
     cin >> n;
-    n -= 3;
-    int v[3];
-    v[0] = v[1] = v[2] = 1;
-    int curr = 2;
-    while (n > 0) {
-        int a = min(25, n);;
-        v[curr] += min(25, a);
-        n -= a;
-        curr--;
+    vector<int> v(n);
+    f(i,0,n) {
+        cin >> v[i];
     }
-    f(i, 0, 3) {
-        char c = 'a'+v[i]-1;
-        cout << c;
+    for (int i = n-2; i >= 0; i--) {
+        if (v[i] > v[i+1]) {
+            if (v[i] < 10) {
+                no();
+                return;
+            }
+            string s = to_string(v[i]);
+            for (int i = 1; i < s.length(); i++) {
+                if (s[i] < s[i-1]) {
+                    no();
+                    return;
+                }
+            }
+            if ((s[s.length()-1] - '0') > v[i+1]) {
+                no();
+                return;
+            }
+            v[i] = s[0] - '0';
+        }
     }
-    cout << endl;
+    yes();
 }
 
 int main() {

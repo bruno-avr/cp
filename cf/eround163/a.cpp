@@ -26,19 +26,16 @@ void no() { cout<<"NO\n"; }
 void solve() {
     int n;
     cin >> n;
-    n -= 3;
-    int v[3];
-    v[0] = v[1] = v[2] = 1;
-    int curr = 2;
-    while (n > 0) {
-        int a = min(25, n);;
-        v[curr] += min(25, a);
-        n -= a;
-        curr--;
+    if (n%2 == 1) {
+        cout << "NO" << endl;
+        return;
     }
-    f(i, 0, 3) {
-        char c = 'a'+v[i]-1;
-        cout << c;
+    yes();
+    bool first = true;
+    for(int i = 0; i < n/2; i++) {
+        if (first) cout << "AA";
+        else cout << "BB";
+        first = !first;
     }
     cout << endl;
 }
