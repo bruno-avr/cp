@@ -30,6 +30,15 @@
     "barrier": "cpp",
     "latch": "cpp",
     "semaphore": "cpp",
-    "*.tcc": "cpp"
+    "*.tcc": "cpp",
+    "rope": "cpp",
+    "slist": "cpp",
+    "unordered_set": "cpp",
+    "algorithm": "cpp",
+    "iosfwd": "cpp",
+    "tuple": "cpp",
+    "istream": "cpp",
+    "typeindex": "cpp",
+    "typeinfo": "cpp"
   }
 }
