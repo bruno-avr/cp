@@ -39,6 +39,9 @@
     "tuple": "cpp",
     "istream": "cpp",
     "typeindex": "cpp",
-    "typeinfo": "cpp"
+    "typeinfo": "cpp",
+    "set": "cpp",
+    "any": "cpp",
+    "numeric": "cpp"
   }
 }
