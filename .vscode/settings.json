@@ -42,6 +42,13 @@
     "typeinfo": "cpp",
     "set": "cpp",
     "any": "cpp",
-    "numeric": "cpp"
+    "numeric": "cpp",
+    "memory": "cpp",
+    "optional": "cpp",
+    "system_error": "cpp",
+    "variant": "cpp",
+    "fstream": "cpp",
+    "iterator": "cpp",
+    "scoped_allocator": "cpp"
   }
 }
