@@ -64,11 +64,11 @@ struct waveletTree {
 		int lb = b[l-1], rb = b[r];
 		return this->l->lte(lb+1, rb, k) + this->r->lte(l-lb, r-rb, k);
 	}
-
-    // swaṕ element with index (i) with element with index (i+1)
+    
+    // swap element with index (i) with element with index (i+1)
     // the index is 1-indexed
     void swap(int i) {
-        if (i >= b.size() or i <= 0) return;
+        if (lo == hi or i >= b.size() or i <= 0) return;
         bool iLeft = b[i] > b[i-1];
         bool i1Left = b[i+1] > b[i];
         if (iLeft && i1Left) this->l->swap(b[i]);
@@ -87,21 +87,12 @@ int main() {
     }
 
     waveletTree wt(v.begin(), v.end(), lo, hi);
-    // cout << wt.count(1, 10, 1) << endl;
-    // cout << wt.count(7, 9, 1) << endl;
-    // cout << wt.kth(1, 10, 3) << endl;
-    // cout << wt.kth(7, 10, 3) << endl;
-    // cout << wt.lte(1, 10, 2) << endl;
-    // cout << wt.lte(7, 10, 2) << endl;
-    cout << wt.count(1, 1, 1) << endl;
-    cout << wt.count(2, 2, 1) << endl;
-    cout << wt.count(3, 3, 1) << endl;
-    cout << wt.count(4, 4, 1) << endl;
-    wt.swap(2);
-    cout << wt.count(1, 1, 1) << endl;
-    cout << wt.count(2, 2, 1) << endl;
-    cout << wt.count(3, 3, 1) << endl;
-    cout << wt.count(4, 4, 1) << endl;
+    cout << wt.count(1, 10, 1) << endl;
+    cout << wt.count(7, 9, 1) << endl;
+    cout << wt.kth(1, 10, 3) << endl;
+    cout << wt.kth(7, 10, 3) << endl;
+    cout << wt.lte(1, 10, 2) << endl;
+    cout << wt.lte(7, 10, 2) << endl;
 
     return 0;
 }

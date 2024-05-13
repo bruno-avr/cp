@@ -49,6 +49,9 @@
     "variant": "cpp",
     "fstream": "cpp",
     "iterator": "cpp",
-    "scoped_allocator": "cpp"
+    "scoped_allocator": "cpp",
+    "map": "cpp",
+    "thread": "cpp",
+    "cstdlib": "cpp"
   }
 }

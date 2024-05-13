@@ -1,6 +1,8 @@
 #include "bits/stdc++.h"
-
 using namespace std;
+
+#define optimize ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+#define endl "\n"
 
 struct waveletTree {
     int lo, hi; // Range of elements
@@ -65,10 +67,10 @@ struct waveletTree {
 		return this->l->lte(lb+1, rb, k) + this->r->lte(l-lb, r-rb, k);
 	}
 
-    // swaṕ element with index (i) with element with index (i+1)
+    // swap element with index (i) with element with index (i+1)
     // the index is 1-indexed
     void swap(int i) {
-        if (i >= b.size() or i <= 0) return;
+        if (lo == hi or i >= b.size() or i <= 0) return;
         bool iLeft = b[i] > b[i-1];
         bool i1Left = b[i+1] > b[i];
         if (iLeft && i1Left) this->l->swap(b[i]);
@@ -79,29 +81,39 @@ struct waveletTree {
 };
 
 int main() {
-    int lo = INT_MAX, hi = INT_MIN;
-    vector<int> v = {3,1,7,5,2,6,4,8,1,2};
-    for (auto el : v) {
-        lo = min(lo, el);
-        hi = max(hi, el);
+    optimize;
+    int n, q;
+    cin >> n >> q;
+    vector<int> v(n);
+    for (int i = 0; i < n; i++) {
+        cin >> v[i];
+    }
+    set<int> aux(v.begin(), v.end());
+    unordered_map<int, int> compress;
+    unordered_map<int, int> decompress;
+    int idx = 0;
+    for (auto &el : aux) {
+        compress[el] = ++idx;
+        decompress[idx] = el;
+    }
+    for (int i = 0; i < n; i++) {
+        v[i] = compress[v[i]];
     }
 
-    waveletTree wt(v.begin(), v.end(), lo, hi);
-    // cout << wt.count(1, 10, 1) << endl;
-    // cout << wt.count(7, 9, 1) << endl;
-    // cout << wt.kth(1, 10, 3) << endl;
-    // cout << wt.kth(7, 10, 3) << endl;
-    // cout << wt.lte(1, 10, 2) << endl;
-    // cout << wt.lte(7, 10, 2) << endl;
-    cout << wt.count(1, 1, 1) << endl;
-    cout << wt.count(2, 2, 1) << endl;
-    cout << wt.count(3, 3, 1) << endl;
-    cout << wt.count(4, 4, 1) << endl;
-    wt.swap(2);
-    cout << wt.count(1, 1, 1) << endl;
-    cout << wt.count(2, 2, 1) << endl;
-    cout << wt.count(3, 3, 1) << endl;
-    cout << wt.count(4, 4, 1) << endl;
+    waveletTree wt(v.begin(), v.end(), 1, idx);
+
+    string query;
+    int a, b, k;
+    for (int i = 0; i < q; i++) {
+        cin >> query;
+        if (query == "Q") {
+            cin >> a >> b >> k;
+            cout << decompress[wt.kth(a,b,k)] << endl;
+        } else {
+            cin >> k;
+            wt.swap(k);
+        }
+    }
 
     return 0;
 }
