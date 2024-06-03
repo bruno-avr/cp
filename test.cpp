@@ -1,107 +1,100 @@
 #include "bits/stdc++.h"
-
 using namespace std;
 
-struct waveletTree {
-    int lo, hi; // Range of elements
-    waveletTree *l, *r; // Left and Right child
-    vector<int> b; // Freq array
+#define optimize ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+#define endl "\n"
 
-    // Array is in range [x, y]
-    // Indices are in range [from, to]
-    waveletTree(vector<int>::iterator from, vector<int>::iterator to, int x, int y) {
-        lo = x, hi = y;
+#define ll long long
+#define ld long double
+#define pii pair<ll,ll>
 
-        // Array is of 0 length
-        // Or a is homogeneous, like {1,1,1,1}
-        if(from == to or hi == lo) return;
+#define fi first
+#define se second
+#define pb push_back
 
-        b.reserve(to - from + 1);
-        b.push_back(0);
+#define all(x) x.begin(),x.end()
 
-        int mid = (lo+hi)/2;
-        // Lambda function to check if a number
-        // is less than or equal to mid
-        auto f = [mid](int x){
-			return x <= mid;
-		};
+#define INF 0x3f3f3f3f
+#define INFLL 0x3f3f3f3f3f3f3f3f
 
-        for(auto it = from; it != to; it++)
-			b.push_back(b.back() + f(*it));
+#define mod 998244353LL
 
-        auto pivot = stable_partition(from, to, f);
-		l = new waveletTree(from, pivot, lo, mid);
-		r = new waveletTree(pivot, to, mid+1, hi);
+#define f(i,s,e) for(ll i=s;i<e;i++)
+void yes() { cout<<"YES\n"; }
+void no() { cout<<"NO\n"; }
+
+vector<int> weights, values;
+
+// each memo[i][j] represents the min weight to achieve value j
+// given we analysed the first i items
+int memo[1001][2001]; // items * values
+int dp(int index, int totalNeeded) {
+    if (totalNeeded <= 0) return 0; // take no items
+    if (index == weights.size()) return INF; // item doesnt exist
+    if (memo[index][totalNeeded] != -1) return memo[index][totalNeeded];
+    int &res = memo[index][totalNeeded];
+    return res = min(
+        dp(index+1, totalNeeded), // dont take item
+        dp(index+1, totalNeeded - values[index]) + weights[index] // take item
+    );
+}
+
+
+
+// ll memo[102][100010];
+ll n, w;
+
+// ll knapsack(ll index, ll value) {
+//     if (index == 0) return 987654;
+//     if (value == -1) return 0;
+//     ll &res = memo[index][value];
+//     if (res != -1) return res;
+//     res = min(res, memo[index+1][value]);
+//     ll &res2 = memo[index+1][value-values[index]];
+//     if (res2 != -1) res2 = weights[index];
+//     else {
+//         res2 = min(res2, res+weights[index]);
+//     }
+//     return min(res, res2);
+// }
+
+void solve() {
+    // memset(memo, -1, sizeof(memo));
+    cin >> n >> w;
+    weights.assign(n, 0);
+    values.assign(n, 0);
+    f(i,0,n) {
+        cin >> weights[i] >> values[i];
     }
+    // ll res = knapsack(0, 0);
+    // cout << res << endl;
 
-    // count of elements in [l, r] equal to k
-    // the interval is 1-indexed
-	int count(int l, int r, int k) {
-		if(l > r or k < lo or k > hi) return 0;
-		if(lo == hi) return r - l + 1;
-		int lb = b[l-1], rb = b[r], mid = (lo+hi)/2;
-		if(k <= mid) return this->l->count(lb+1, rb, k);
-		return this->r->count(l-lb, r-rb, k);
-	}
+    vector<vector<ll>> dp(101, vector<ll>(100001, -1));
+    // ll dp[101][100001];
+    // memset(dp, -1, sizeof(dp));
+    dp[0][0] = 0;
+    for(ll i = 1; i <= n; i++) {
+        for(ll j = 0; j < 100001; j++) {
+            if (dp[i-1][j] != -1) {
+                if (dp[i][j] == -1) dp[i][j] = dp[i-1][j];
+                else dp[i][j] = min(dp[i][j], dp[i-1][j]);
 
-    // kth smallest element in [l, r]
-    // the interval is 1-indexed
-	int kth(int l, int r, int k){
-		if(l > r) return 0;
-		if(lo == hi) return lo;
-		int lb = b[l-1]; //amt of nos in first (l-1) nos that go in left 
-		int rb = b[r]; //amt of nos in first (r) nos that go in left
-		int inLeft = rb - lb;
-		if(k <= inLeft) return this->l->kth(lb+1, rb , k); // kth is in the left child
-		return this->r->kth(l-lb, r-rb, k-inLeft); // kth is the in right child
-	}
-
-    // count of nos in [l, r] that are <= k
-    // the interval is 1-indexed
-	int lte(int l, int r, int k) {
-		if(l > r or k < lo) return 0;
-		if(hi <= k) return r - l + 1;
-		int lb = b[l-1], rb = b[r];
-		return this->l->lte(lb+1, rb, k) + this->r->lte(l-lb, r-rb, k);
-	}
-
-    // swaṕ element with index (i) with element with index (i+1)
-    // the index is 1-indexed
-    void swap(int i) {
-        if (i >= b.size() or i <= 0) return;
-        bool iLeft = b[i] > b[i-1];
-        bool i1Left = b[i+1] > b[i];
-        if (iLeft && i1Left) this->l->swap(b[i]);
-        if (!iLeft && !i1Left) this->r->swap(i-b[i]);
-        if (iLeft && !i1Left) b[i]--;
-        if (!iLeft && i1Left) b[i]++;
+                if (dp[i][j+values[i-1]] == -1) dp[i][j+values[i-1]] = dp[i-1][j] + weights[i-1];
+                else dp[i][j+values[i-1]] = min(dp[i][j+values[i-1]], dp[i-1][j] + weights[i-1]);
+            }
+        }
     }
-};
+    for (ll i = 100000; i >= 0; i--) {
+        if (dp[n][i] != -1 && dp[n][i] <= w) {
+            cout << i << endl;
+            return;
+        }
+    }
+}
 
 int main() {
-    int lo = INT_MAX, hi = INT_MIN;
-    vector<int> v = {3,1,7,5,2,6,4,8,1,2};
-    for (auto el : v) {
-        lo = min(lo, el);
-        hi = max(hi, el);
-    }
-
-    waveletTree wt(v.begin(), v.end(), lo, hi);
-    // cout << wt.count(1, 10, 1) << endl;
-    // cout << wt.count(7, 9, 1) << endl;
-    // cout << wt.kth(1, 10, 3) << endl;
-    // cout << wt.kth(7, 10, 3) << endl;
-    // cout << wt.lte(1, 10, 2) << endl;
-    // cout << wt.lte(7, 10, 2) << endl;
-    cout << wt.count(1, 1, 1) << endl;
-    cout << wt.count(2, 2, 1) << endl;
-    cout << wt.count(3, 3, 1) << endl;
-    cout << wt.count(4, 4, 1) << endl;
-    wt.swap(2);
-    cout << wt.count(1, 1, 1) << endl;
-    cout << wt.count(2, 2, 1) << endl;
-    cout << wt.count(3, 3, 1) << endl;
-    cout << wt.count(4, 4, 1) << endl;
+    optimize;
+    solve();
 
     return 0;
 }

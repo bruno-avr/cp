@@ -1,71 +1,144 @@
 #include "bits/stdc++.h"
 using namespace std;
 
-#define optimize ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
-#define endl "\n"
-#define ll unsigned long long
+#define ll long long
+
+int n;
+string type;
+vector<int> graph[100*100+10];
+string s[101];
+bool visited[100*100+10];
+
+void add(int i, int j, int x, int y) {
+    if (x >= 0 && x < n)
+        if (y >= 0 && y < n)
+            if (s[x][y] != '.')
+                graph[100*(i)+(j)].push_back(100*(x)+(y));
+}
+
+void hook(int i, int j) {
+    for (int a = 0; a < i; a++) add(i, j, a, j); // up
+    for (int a = i+1; a < n; a++) add(i, j, a, j); // down
+    for (int a = 0; a < j; a++) add(i, j, i, a); // left
+    for (int a = j+1; a < n; a++) add(i, j, i, a); // right
+}
+
+void queen(int i, int j) {
+    for (int a = 0; a < i; a++) add(i, j, a, j); // up
+    for (int a = i+1; a < n; a++) add(i, j, a, j); // down
+    for (int a = 0; a < j; a++) add(i, j, i, a); // left
+    for (int a = j+1; a < n; a++) add(i, j, i, a); // right
+
+    int thisI, thisJ;
+
+    thisI = i-1; thisJ = j-1; // up-left
+    while (thisI >= 0 && thisJ >= 0) add(i, j, thisI--, thisJ--);
+
+    thisI = i-1; thisJ = j+1; // up-right
+    while (thisI >= 0 && thisJ < n) add(i, j, thisI--, thisJ++);
+
+    thisI = i+1; thisJ = j-1; // bottom-left
+    while (thisI < n && thisJ >= 0) add(i, j, thisI++, thisJ--);
+
+    thisI = i+1; thisJ = j+1; // bottom-right
+    while (thisI < n && thisJ < n) add(i, j, thisI++, thisJ++);
+}
+
+void bishop(int i, int j) {
+    int thisI, thisJ;
+
+    thisI = i-1; thisJ = j-1; // up-left
+    while (thisI >= 0 && thisJ >= 0) add(i, j, thisI--, thisJ--);
+
+    thisI = i-1; thisJ = j+1; // up-right
+    while (thisI >= 0 && thisJ < n) add(i, j, thisI--, thisJ++);
+
+    thisI = i+1; thisJ = j-1; // bottom-left
+    while (thisI < n && thisJ >= 0) add(i, j, thisI++, thisJ--);
+
+    thisI = i+1; thisJ = j+1; // bottom-right
+    while (thisI < n && thisJ < n) add(i, j, thisI++, thisJ++);
+}
+
+void knight(int i, int j) {
+    add(i, j, i-2, j-1);
+    add(i, j, i-2, j+1);
+    add(i, j, i-1, j-2);
+    add(i, j, i-1, j+2);
+    add(i, j, i+1, j-2);
+    add(i, j, i+1, j+2);
+    add(i, j, i+2, j-1);
+    add(i, j, i+2, j+1);
+}
+
+void king(int i, int j) {
+    add(i, j, i-1, j-1);
+    add(i, j, i-1, j);
+    add(i, j, i-1, j+1);
+    add(i, j, i, j-1);
+    add(i, j, i, j+1);
+    add(i, j, i+1, j-1);
+    add(i, j, i+1, j);
+    add(i, j, i+1, j+1);
+}
+
+int dfs(int x) {
+    visited[x] = true;
+    int numVisited = 1;
+    for (auto viz : graph[x]) {
+        if (!visited[viz]) {
+            numVisited += dfs(viz);
+        }
+    }
+    return numVisited;
+}
+
+void printRes(int x, int parent) {
+    visited[x] = true;
+    for (auto viz : graph[x]) {
+        if (!visited[viz]) {
+            printRes(viz, x);
+        }
+    }
+    if (x != parent) {
+        cout << (x/100)+1 << " " << (x%100)+1 << " " << (parent/100)+1 << " " << (parent%100)+1 << endl;
+    }
+}
+
 
 int main() {
-    optimize;
-    ll n, q, a;
-    cin >> n >> q;
-    vector<tuple<ll,ll,ll>> v(n);
-    for (ll i = 1; i <= n; i++) {
-        cin >> a;
-        v[i-1] = {i, a, i-1};
+    cin >> n >> type;
+    
+    for (int i = 0; i < n; i++) {
+        cin >> s[i];
     }
-    vector<tuple<ll,ll,ll>> ordered(v);
-    tuple<ll,ll,ll> minT = v[0];
-    for (ll i = 1; i < n; i++) {
-        auto &[x1,y1,i1] = minT;
-        auto &[x2,y2,i2] = v[i];
-        ll aux = lcm(y1, y2);
-        ll first = aux/y1 * x1;
-        ll second = aux/y2 * x2;
-        if (first < second) minT = v[i];
-    }
-    // sort(ordered.begin(), ordered.end(), [](const tuple<ll,ll,ll> &e1, const tuple<ll,ll,ll> &e2){
-    //     auto &[x1,y1,i1] = e1;
-    //     auto &[x2,y2,i2] = e2;
-    //     ll aux = lcm(y1, y2);
-    //     ll first = aux/y1 * x1;
-    //     ll second = aux/y2 * x2;
-    //     cout <<first << endl;
-    //     cout << second << endl;
-    //     if (first == second) return true;
-    //     if (first > second) return true;
-    //     return false;
-    // });
-    auto &[x1,y1,i1] = minT;
-    // cout << x1 << " " << y1 << " " << i1 << endl;
-    vector<ll> aux(3*n, 987654321987654321);
-    for(ll i = 1; i <= n; i++) {
-        for(ll j = 1; j <= n; j++) {
-            // cout << "i" << i << " " << "j" << j << " " <<get<1>(v[i-1]) + get<1>(v[j-1]) <<  endl;
-            aux[i+j] = min(get<1>(v[i-1]) + get<1>(v[j-1]), aux[i+j]);
-        }
-    }
-    while (q--) {
-        ll k;
-        cin >> k;
-        if (k <= n) {
-            auto &[x2,y2,i2] = v[k-1];
-            cout << y2 << endl;
-            continue;
-        }
-        ll res = 987654321987654321;
-        
-        for (ll ij = n+1; ij <= min(k, 2*n); ij++) {
-            if ((k-(ij))%x1 == 0) {
-                ll thisV = (k-(ij))/x1;
-                thisV *= y1;
-                thisV += aux[ij];
-                res = min(res, thisV);
-                // cout << k << " " << ij << " " << aux[ij] << endl;
+    vector<int> vpos;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (s[i][j] != '.') {
+                vpos.push_back(100*i + j);
+                if (type == "R") hook(i, j);
+                else if (type == "Q") queen(i, j);
+                else if (type == "B") bishop(i, j);
+                else if (type == "N") knight(i, j);
+                else if (type == "K") king(i, j);
+                else assert(false);
             }
         }
-        cout << res << endl;
     }
+
+    memset(visited, 0, sizeof visited);
+    int numVisited = dfs(vpos[0]);
+
+    memset(visited, 0, sizeof visited);
+
+    if (numVisited == vpos.size()) {
+        cout << "YES" << endl;
+        printRes(vpos[0], vpos[0]);
+        return 0;
+    }
+
+    cout << "NO" << endl;
 
     return 0;
 }

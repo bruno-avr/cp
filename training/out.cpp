@@ -11,8 +11,8 @@ ll n, maxLevel, p;
 string s;
 vector<ll> money(260);
 
-int pwr(int a, int b) {
-    int prod = 1;
+ll pwr(ll a, ll b) {
+    ll prod = 1;
     for (; b; b >>= 1) {
         if (b&1) prod = prod*a;
         a *= a;
@@ -20,24 +20,24 @@ int pwr(int a, int b) {
     return prod;
 }
 
-bool isPossible(int i, char c, int level) {
+bool isPossible(ll i, char c, ll level) {
     if (i >= n) return true;
 
     int &res = memoPossible[i][c-'A'][level];
     if (res != -1) return res;
 
-    res = 1;
+    res = true;
 
     if (s[i] != '?' && s[i] != c) {
-        res = 0;
+        res = false;
     } else {
-        int skip = pwr(p, level);
+        ll skip = pwr(p, level);
         res &= isPossible(i+skip, c, level);
     }
     return res;
 }
 
-ll dp(int i, int level) {
+ll dp(ll i, ll level) {
     if (level > maxLevel) return 0;
     if (i >= n) return 0;
 
@@ -51,45 +51,17 @@ ll dp(int i, int level) {
             res = max(res, (maxLevel - level + 1) * levelMoney);
         }
     }
-    ll thisV = 0;
-    for (int j = i; j < pwr(p, level+1); j+=pwr(p, level)) {
-        thisV += dp(j, level+1);
-    }
-    res = max(res, thisV);
+    res = max(res,
+        dp(i, level+1) +
+        dp(i+pwr(p, level), level+1)
+    );
     return res;
 }
 
 int main() {
-    ios_base::sync_with_stdio(0);
-    cin.tie(0);
-    cout.tie(0);
-
-    memset(memo, -1, sizeof memo);
-    memset(memoPossible, -1, sizeof memoPossible);
-    cin >> n; // 1e5
-    cin >> s;
-    p = -1;
-    for (ll i = 2; i*i <= n; i++) {
-        if (n%i == 0) {
-            p = i;
-            break;
-        }
+    for(int i = 0; i < 100000; i++) {
+        cout << "?";
     }
-    if(p == -1) p = n;
-    maxLevel = 0;
-    for (ll i = 1; i < n; i*=p) maxLevel++;
-
-    int k;
-    string c;
-    cin >> k;
-    for (int i = 0; i < k; i++) {
-        cin >> c;
-        chars.push_back(c[0]);
-        cin >> money[c[0]];
-    }
-
-    ll res = dp(0, 0);
-    cout << res << endl;
 
     return 0;
 }
