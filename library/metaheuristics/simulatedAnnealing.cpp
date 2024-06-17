@@ -1,7 +1,14 @@
-// Online C++ compiler to run C++ program online
-#include "bits/stdc++.h"
+// Simulated Annealing
+// Dado um vetor e uma função que o valor do vetor
+// altera o vetor para conseguir o maior valor possível
 
-using namespace std;
+// it = temperatura inicial (não alterar)
+// cr = taxa de resfriamento
+// ni = numero de iteracoes
+// n = tamanho do vetor
+// simulatedAnnealing = retorna o melhor valor encontrado
+
+// Complexidade: O(ni*n)
 
 #define ld long double
 
@@ -9,9 +16,9 @@ ld it = 100, cr = 0.999;
 int ni = 100000;
 
 int calculate(vector<int> &v) {
-    int sum = 0;
-    for(int i = 1; i < v.size(); i++) sum += abs(v[i] - v[i-1]);
-    return sum;
+    // calcular um valor a partir de v
+    // quanto mais perto v estiver da resposta
+    // maior deve ser o valor retornado por essa função
 }
 
 int simulatedAnnealing(vector<int> &best) {
@@ -42,19 +49,8 @@ int simulatedAnnealing(vector<int> &best) {
     return bestVal;
 }
 
-void solve(int c) {
-    int n;
-    cin >> n;
-    vector<int> v(n);
-    for (int i = 0; i < n; i++) cin >> v[i];
-    int res = simulatedAnnealing(v);
-    cout << "Case " << c << ": " << res << endl;
-}
-
 int main() {
     srand(time(0));
-    int t; cin >> t;
-    int c = 1;
-    while(t--) solve(c++);
+    // main
     return 0;
 }

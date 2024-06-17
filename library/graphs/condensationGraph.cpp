@@ -42,17 +42,19 @@ void dfs2(int v, int c) {
     for (int u : reverseGraph[v]) if (visited[u] == 1) dfs2(u, c);
 }
 
-void dfs3(int v, int parent) {
-    if (componentOfV[v] != componentOfV[parent]) {
-        condensationGraphEdges[componentOfV[parent]].insert(componentOfV[v]);
-    }
+void dfs3(int v) {
     visited[v] = 3;
 
-    for (int u : graph[v]) if (visited[u] == 2) dfs3(u, v);
+    for (int u : graph[v]) {
+        if (componentOfV[v] != componentOfV[u]) {
+            condensationGraphEdges[componentOfV[v]].insert(componentOfV[u]);
+        }
+        if (visited[u] != 3) dfs3(u);
+    }
 }
 
 void createCondensationGraph(int n) {
-    for (int i = 0; i < n; i++) if(visited[i] == 2) dfs3(i,i);
+    for (int i = 0; i < n; i++) if(visited[i] == 2) dfs3(i);
 
     for (int i = 0; i < components.size(); i++) {
         condensationGraph[i].insert(condensationGraph[i].end(), condensationGraphEdges[i].begin(), condensationGraphEdges[i].end());

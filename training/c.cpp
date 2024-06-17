@@ -5,6 +5,7 @@ using namespace std;
 
 ll memo[100010][20];
 int memoPossible[100010][27][20];
+ll memoSum[100010][20];
 
 vector<char> chars;
 ll n, maxLevel, p;
@@ -51,11 +52,24 @@ ll dp(int i, int level) {
             res = max(res, (maxLevel - level + 1) * levelMoney);
         }
     }
-    ll thisV = 0;
-    for (int j = i; j < pwr(p, level+1); j+=pwr(p, level)) {
-        thisV += dp(j, level+1);
+    if (memoSum[i][level] == -1) {
+        ll thisV = 0;
+        int step = pwr(p, level);
+        int cmp = pwr(p, level+1);
+        for (int j = i; (j < cmp) && (j < 100010); j+=step) {
+            if (memoSum[j][level] != -1) {
+                thisV += memoSum[j][level];
+                break;
+            }
+            thisV += dp(j, level+1);
+        }
+        for (int j = i; (j < cmp) && (j < 100010); j+=step) {
+            if (memoSum[j][level] != -1) break;
+            memoSum[j][level] = thisV;
+            thisV -= dp(j, level+1);
+        }
     }
-    res = max(res, thisV);
+    res = max(res, memoSum[i][level]);
     return res;
 }
 
@@ -66,6 +80,7 @@ int main() {
 
     memset(memo, -1, sizeof memo);
     memset(memoPossible, -1, sizeof memoPossible);
+    memset(memoSum, -1, sizeof memoSum);
     cin >> n; // 1e5
     cin >> s;
     p = -1;
