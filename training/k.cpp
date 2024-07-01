@@ -1,102 +1,157 @@
 #include "bits/stdc++.h"
-using namespace std;
 
 #define optimize ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 #define endl "\n"
-
-#define ll long long
 #define ld long double
-#define pii pair<ll,ll>
-
-#define fi first
-#define se second
-#define pb push_back
-
-#define all(x) x.begin(),x.end()
-
 #define INF 0x3f3f3f3f
-#define INFLL 0x3f3f3f3f3f3f3f3f
 
-#define mod 998244353LL
+using namespace std;
 
-#define f(i,s,e) for(ll i=s;i<e;i++)
-void yes() { cout<<"YES\n"; }
-void no() { cout<<"NO\n"; }
-
-ll _tam_crivo;
-bitset<10000010> bs;
-vector<int> primos;
-
-void crivo(ll limite){
-    _tam_crivo = limite +1;
-    bs.reset();bs.flip();
-    bs.set(0,false); bs.set(1,false);
-    for(ll i=2;i<=_tam_crivo; i++){
-        if(bs.test((size_t)i)){
-            for(ll j = i*i; j<=_tam_crivo;j+=i){
-                bs.set((size_t)j,false);
-            }
-            primos.push_back((int)i);
-        }
+void print(vector<vector<char>> &g) {
+    for (int i = 0; i < g.size(); i++) {
+        for (int j = 0; j < g[0].size(); j++)
+            cout << g[i][j];
+        cout << endl;
     }
 }
 
-bool eh_primo(ll N){
-    if(N<_tam_crivo) return bs.test(N);
-    for(int i=0;i<primos.size();i++){
-        if(N%primos[i]==0){
-            return false;
-        }
+bool check(vector<vector<char>> &g) {
+    for (int i = 0; i < g.size(); i++) {
+        for (int j = 0; j < g[0].size(); j++)
+            if (g[i][j] == '.') return false;
     }
     return true;
 }
 
-vector<int> primeFactors(int N){
-    vector<int> factors;
-    int PF_idx = 0, PF = primos[PF_idx];
-    while(N!=1 && PF*PF <= N){
-        while(N%PF == 0){
-            N/=PF;
-            factors.push_back(PF);
-        }
-        PF=primos[++PF_idx];
-    }
-    if(N!=1) factors.push_back(N);
-    return factors;
-}
+void expand(vector<vector<char>> &g, pair<int, int> pos) {
+    vector<vector<char>> copy(g);
+    int currChar = copy[pos.first][pos.second];
+    int nRows = copy.size();
+    int nCols = copy[0].size();
 
-void solve() {
-    int t, k;
-    cin >> t >> k;
-    crivo(t);
-
-    ll multPrimos = 1;
-    vector<bool> v(primos.size()-1, false);
-    for (int i = primos.size()-k; i < primos.size(); i++) {
-        v[i] = true;
-    }
-    for (auto &el: primos) {
-        multPrimos *= el;
-    }
-    int res = 0;
-    do {
-        ll mult = 1;
-        for (int i = 0; i < v.size(); i++) {
-            // cout << primos[i] << endl;
-            if (v[i]) mult *= primos[i]-1;
+    int minCol = nCols-1;
+    for (int i = pos.first; i < nRows; i++) {
+        for (int j = pos.second; j <= minCol; j++) {
+            if (copy[i][j] == '.' or copy[i][j] == currChar)
+                copy[i][j] = currChar;
+            else {
+                minCol = j-1;
+                break;
+            }
         }
-        res += mult;
-    } while(next_permutation(all(v)));
-    int gcd = __gcd(res, (int)multPrimos);
-    cout << res/gcd << "/" << multPrimos/gcd << endl;
-    // for (auto &el: primos) {
-    //     cout << el << endl;
-    // }
+    }
+
+    minCol = nCols-1;
+    for (int i = pos.first; i >= 0; i--) {
+        for (int j = pos.second; j <= minCol; j++) {
+            if (copy[i][j] == '.' or copy[i][j] == currChar)
+                copy[i][j] = currChar;
+            else {
+                minCol = j-1;
+                break;
+            }
+        }
+    }
+
+    int maxCol = 0;
+    for (int i = pos.first; i < nRows; i++) {
+        for (int j = pos.second; j >= maxCol; j--) {
+            if (copy[i][j] == '.' or copy[i][j] == currChar)
+                copy[i][j] = currChar;
+            else {
+                maxCol = j+1;
+                break;
+            }
+        }
+    }
+
+    maxCol = 0;
+    for (int i = pos.first; i >= 0; i--) {
+        for (int j = pos.second; j >= maxCol; j--) {
+            if (copy[i][j] == '.' or copy[i][j] == currChar)
+                copy[i][j] = currChar;
+            else {
+                maxCol = j+1;
+                break;
+            }
+        }
+    }
+
+    vector<pair<int,int>> preCalc(nRows);
+    for (int i = 0; i < nRows; i++) {
+        int l = INT_MAX, r = INT_MIN;
+        for (int j = 0; j < nCols; j++) {
+            if (copy[i][j] == currChar) {
+                l = min(l, j);
+                r = max(r, j);
+            }
+        }
+        preCalc[i] = {l, r};
+    }
+
+    int maxArea = 0;
+    pair<int, int> pse, psd, pie, pid;
+
+    for (int startingRow = 0; startingRow < nRows; startingRow++) {
+        for (int endingRow = 0; endingRow < nRows; endingRow++) {
+            int l = max(preCalc[startingRow].first, preCalc[endingRow].first);
+            int r = min(preCalc[startingRow].second, preCalc[endingRow].second);
+            if (l > r) continue;
+            int currArea = (r - l + 1) * (endingRow - startingRow + 1);
+            if (currArea > maxArea) {
+                maxArea = currArea;
+                pse = {startingRow, l};
+                psd = {startingRow, r};
+                pie = {endingRow, l};
+                pid = {endingRow, r};
+            }
+        }
+    }
+
+    for (int i = pse.first; i <= pid.first; i++) {
+        for (int j = pse.second; j <= pid.second; j++) {
+            if (g[i][j] != currChar) {
+                g[i][j] = currChar + 32;
+            }
+        }
+    }
 }
 
 int main() {
     optimize;
-    solve();
+    int n, m;
+    cin >> n >> m;
+    vector<pair<int,int>> pos(26, {INF, INF});
+    vector<vector<char>> g(n, vector<char>(m));
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < m; j++) {
+            cin >> g[i][j];
+            if (g[i][j] != '.') {
+                pos[g[i][j] - 'A'] = {i, j};
+            }
+        }
+    }
+    
+    vector<int> v(25);
+    iota(v.begin(), v.end(), 1);
+    random_device rd;
+    mt19937 mt(rd());
+
+    while (true) {
+        vector<vector<char>> copy(g);
+        shuffle(v.begin(), v.end(), mt);
+
+        expand(copy, pos[0]);
+        for (int i = 0; i < 25; i++) {
+            if (pos[v[i]].first != INF) {
+                expand(copy, pos[v[i]]);
+            }
+        }
+        if (check(copy)) {
+            print(copy);
+            break;
+        }
+    }
 
     return 0;
 }

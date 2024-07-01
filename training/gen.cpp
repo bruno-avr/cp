@@ -42,11 +42,17 @@ int main() {
 		v.push_back({sinl(i), i});
     };
     auto res = lis(v);
-    int n;
-	cin >> n;
-	for (int i = 0; i < n; i++) {
-		cout << res[i].second << endl;
-	}
+	bool first = true;
+	// cout << "{";
+	// for (auto el : res) {
+	// 	if (first) first = false;
+	// 	else cout << ",";
+	// 	cout << el.second;
+	// }
+	// cout << "}" << endl;
+
+    cout << res.size() << endl;
+    
 
     return 0;
 }
