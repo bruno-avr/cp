@@ -52,6 +52,9 @@
     "scoped_allocator": "cpp",
     "map": "cpp",
     "thread": "cpp",
-    "cstdlib": "cpp"
+    "cstdlib": "cpp",
+    "functional": "cpp",
+    "ratio": "cpp",
+    "future": "cpp"
   }
 }
