@@ -55,6 +55,7 @@
     "cstdlib": "cpp",
     "functional": "cpp",
     "ratio": "cpp",
-    "future": "cpp"
+    "future": "cpp",
+    "format": "cpp"
   }
 }
